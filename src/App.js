@@ -28,7 +28,7 @@ function App() {
       }));
       //Fetch endpoint
       const response = await fetch(
-        "https://redux-backend-bbe09-default-rtdb.europe-west1.firebasedatabase.app/cart",
+        "https://redux-backend-bbe09-default-rtdb.europe-west1.firebasedatabase.app/cart.json",
         {
           method: "PUT",
           body: JSON.stringify(cart), //stringify cart
