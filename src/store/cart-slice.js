@@ -16,6 +16,10 @@ const cartSlice = createSlice({
     totalAmount: 0,
   },
   reducers: {
+    replaceCart(state, action) {
+      state.totalQuantity = action.payload.totalQuantity;
+      state.items = action.payload.items;
+    },
     addItemToCart(state, action) {
       const newItem = action.payload; //payload will be what we pass it
       const existingItem = state.items.find((item) => item.id === newItem.id); //check if item already exists
