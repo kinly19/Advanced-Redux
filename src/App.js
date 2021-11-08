@@ -1,6 +1,6 @@
 import { Fragment, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { sendCartData } from './store/cart-slice'; //import function
+import { sendCartData,fetchCartData } from './store/cart-actions'; //import function
 
 import Cart from './components/Cart/Cart';
 import Layout from './components/Layout/Layout';
@@ -17,6 +17,10 @@ function App() {
   const cart = useSelector((state) => state.cart);//gets hold of overall cart
   const notification = useSelector((state) => state.ui.notification);
   
+  useEffect(() => {
+    dispatch(fetchCartData());
+  },[]);
+
   //send http request when cart changes
   useEffect(() => {
 
@@ -25,7 +29,10 @@ function App() {
       return;
     };
 
-    dispatch(sendCartData(cart)); //comes from store overall state
+    if (cart.isChanged){
+      dispatch(sendCartData(cart)); //comes from store overall state
+    }
+
   }, [cart, dispatch]);
 
   return (
