@@ -1,4 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { uiActions } from "./ui-slice";
+// ======================================= Notes =======================================
+// Action creator - is a function that literally creates an action object
+// Thunk - Redux Thunk is a middleware that lets you call action creators that return a FUNCTION
+//   instead of an action object
+// try...catch - statement marks a block of statements to try and specifies a response should an exception be thrown.
+// The await keyword is only valid inside async functions
+//======================================================================================
 
 const cartSlice = createSlice({
   name: "cart",
@@ -40,6 +48,60 @@ const cartSlice = createSlice({
     },
   },
 });
+
+//Redux thunk function 
+export const sendCartData = (cart) => {
+  return async (dispatch) => {
+    //dispatch update notification (return new object)
+    dispatch(
+      uiActions.showNotification({
+        status: "Pending",
+        title: "Sending...",
+        message: "Sending cart data.",
+      })
+    );
+
+    //function for making a PUT request
+    const sendRequest = async () => {
+      const response = await fetch(
+        "https://redux-backend-bbe09-default-rtdb.europe-west1.firebasedatabase.app/cart.json",
+        {
+          method: "PUT",
+          body: JSON.stringify(cart), //stringify cart
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Sending Cart Data Failed.");
+      }
+    };
+
+    //try sendRequest function
+    try {
+      await sendRequest();
+      //if above function completes with no errors then,
+      //dispatch and update notifications
+      dispatch(
+        uiActions.showNotification({
+          status: "success",
+          title: "Sent",
+          message: "Cart data sent succesfully!",
+        })
+      );
+
+      //if sendRequest function fails
+    } catch (error) {
+      //dispatch error notification
+      dispatch(
+        uiActions.showNotification({
+          status: "error",
+          title: "Error",
+          message: "Sending cart data failed!",
+        })
+      );
+    }
+  };
+};
 
 export const cartActions = cartSlice.actions; //exporting our cartSlice actions 
 export default cartSlice;
